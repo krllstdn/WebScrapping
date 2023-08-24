@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  scraper:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./sreality:/app
+    ports:
+      - "4444:4444" # Expose the Selenium port if you ever need to connect from outside the container
+    # command: [ 'scrapy', 'crawl', 'sreality' ]
+  database:
+
+
