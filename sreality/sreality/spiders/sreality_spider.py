@@ -4,6 +4,7 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from urllib.parse import urljoin
 import logging
 import time
+from sreality.items import SrealityItem
 
 
 class SRealitySpider(Spider):
@@ -11,6 +12,7 @@ class SRealitySpider(Spider):
     start_urls = ['https://www.sreality.cz/hledani/pronajem/byty/praha']
     item_count = 0
     page_count = 2
+    NUMBER_TO_SCRAPE = 20
 
     def __init__(self):
         super().__init__()
@@ -24,7 +26,7 @@ class SRealitySpider(Spider):
             chrome_options.set_capability(key, value)
         
         self.driver = webdriver.Remote(
-            command_executor='http://172.20.0.2:4444/wd/hub',
+            command_executor='http://selenium:4444/wd/hub',
             options=chrome_options
         )
 
@@ -50,24 +52,23 @@ class SRealitySpider(Spider):
 
         # Continue with your parsing logic
         for flat in response.xpath('//div[contains(@class, "property")]'):
-            item = {
-                'title': flat.xpath('.//h2/a/span[@class="name ng-binding"]/text()').get(),
-                'image_url': flat.xpath('.//img/@src').get()
-            }
+            item = SrealityItem()
+            item['title'] = flat.xpath('.//h2/a/span[@class="name ng-binding"]/text()').get()
+            item['image_url'] = flat.xpath('.//img/@src').get()
 
             self.item_count += 1
-            logging.info(f"{self.item_count}. Scraped item: {item['title']}")
+            # logging.info(f"{self.item_count}. Scraped item: {item.title}")
 
             yield item
 
-            if self.item_count == 500:
-                logging.info("Reached the goal of 500 items. Closing spider.")
+            if self.item_count == self.NUMBER_TO_SCRAPE:
+                logging.info(f"Reached the goal of {self.NUMBER_TO_SCRAPE} items. Closing spider.")
                 self.driver.quit()
                 return
 
-        if self.item_count < 500:
+        if self.item_count < self.NUMBER_TO_SCRAPE:
             next_page = response.xpath('//a[contains(@class, "paging-next")]/@href').get()
-            pag_url = 'https://www.sreality.cz/hledani/pronajem/byty/praha?strana='
+            # pag_url = 'https://www.sreality.cz/hledani/pronajem/byty/praha?strana='
 
             if next_page:
                 next_page = urljoin(response.url, next_page)

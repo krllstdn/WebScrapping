@@ -1,9 +1,5 @@
 scrapy
 scrapy-selenium
 selenium
-Flask
 sqlalchemy
 psycopg2-binary
-
-
-

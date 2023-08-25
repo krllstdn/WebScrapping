@@ -1,15 +1,37 @@
 version: '3'
 
 services:
+  selenium:
+    image: selenium/standalone-chrome:latest
+    ports:
+      - "4444:4444"
+
   scraper:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.scrap
     volumes:
       - ./sreality:/app
+    command: [ "sh", "-c", "sleep 10 && scrapy crawl sreality" ]
+    depends_on:
+      - selenium
+
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydatabase
     ports:
-      - "4444:4444" # Expose the Selenium port if you ever need to connect from outside the container
-    # command: [ 'scrapy', 'crawl', 'sreality' ]
-  database:
+      - "5432:5432"
 
-
+  web:
+    build:
+      context: web
+      dockerfile: Dockerfile.web
+    volumes:
+      - ./web/app:/app
+    ports:
+      - "8080:8080"
+    command: [ 'python', 'app.py' ]
+    # command: tail -f /dev/null

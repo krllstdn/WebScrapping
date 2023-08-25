@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Items</title>
+</head>
+
+<body>
+    <h1>Items</h1>
+    <ol>
+        {% for item in items %}
+        <li>
+            <img src="{{ item.image_url }}" alt="{{ item.title }}">
+            <strong>{{ item.title }}</strong>
+        </li>
+        {% endfor %}
+    </ol>
+</body>
+
+</html>
