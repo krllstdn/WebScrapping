@@ -5,13 +5,19 @@
     <title>Items</title>
 </head>
 
+<style>
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+    }
+</style>
+
 <body>
-    <h1>Items</h1>
+    <h1 style="padding-left: 50px;">Items</h1>
     <ol>
         {% for item in items %}
-        <li>
-            <img src="{{ item.image_url }}" alt="{{ item.title }}">
-            <strong>{{ item.title }}</strong>
+        <li style="padding-bottom: 20px;">
+            <img style="vertical-align: middle; padding-right: 20px;" src="{{ item.image_url }}" alt="{{ item.title }}">
+            <strong style="vertical-align: middle;">{{ item.title }}</strong>
         </li>
         {% endfor %}
     </ol>

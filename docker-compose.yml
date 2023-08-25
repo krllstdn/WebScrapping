@@ -12,7 +12,12 @@ services:
       dockerfile: Dockerfile.scrap
     volumes:
       - ./sreality:/app
-    command: [ "sh", "-c", "sleep 10 && scrapy crawl sreality" ]
+    command:
+      [
+        "sh",
+        "-c",
+        "sleep 10 && scrapy crawl sreality && tail -f /dev/null"
+      ]
     depends_on:
       - selenium
 
@@ -34,4 +39,3 @@ services:
     ports:
       - "8080:8080"
     command: [ 'python', 'app.py' ]
-    # command: tail -f /dev/null
